@@ -1,20 +1,33 @@
 <script setup>
+import { ref, computed } from 'vue';
 import IconSearch from '../Icons/IconSearch.vue'
-
+const model = defineModel()
+const isActive = ref('false')
+const onFocus = () => {
+  isActive.value = true
+}
+const onBlur = () =>{
+  isActive.value = false
+}
+const searchClasses = computed(()=> ({'search--active': isActive.value}))
+const emit = defineEmits(['search'])
 </script>
 
 <template>
-  <form @submit="onSearch">
-    <div class="search" :class="classes">
+  <form @submit.prevent="() =>{
+    emit('search')
+  }">
+
+    <div class="search" :class="searchClasses" v-bind="$attrs">
       <input
-        class="search__input"
         v-model="model"
-        @focus="onFocus"
-        @blur="onBlur"
+        class="search__input"
         type="text"
         placeholder="Buscar"
+        @focus="onFocus"
+        @blur="onBlur"
       />
-      <button class="search__submit" type="submit">
+      <button class="search__submit" type="submit" v-bind="$attrs">
         <IconSearch />
       </button>
     </div>
